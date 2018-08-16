@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         PR Collapse All
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Allows you to easily toggle the collapsed state of all
 // @author       You
-// @include      /https://git.*/pull/.*/files.*/
+// @include      /https://git.*/pull/.*/
 // @grant        none
 // https://git.rockfin.com/QLMS/qlms-toggle/pull/1/files
 // ==/UserScript==
@@ -28,8 +28,10 @@
         });
 
         button.onclick = function(e) {
+            button.disabled = true;
             e.stopPropagation();
             clickAllFileToggles();
+            button.disabled = false;
             button.collapsed = !button.collapsed;
             button.innerHTML = button.collapsed ? 'Expand All' : 'Collapse All';
         }
@@ -42,8 +44,29 @@
         return headerActions;
     }
 
-    var toggleAllButton = createToggleAllButton();
-    var headerActions = document.querySelector('.gh-header-actions');
-    headerActions && headerActions.appendChild(toggleAllButton);
+    function addFunctionalityToPage() {
+        console.log(location.origin + location.pathname);
+        var toggleAllButton = createToggleAllButton();
+        var headerActions = document.querySelector('.gh-header-actions');
+        headerActions && headerActions.appendChild(toggleAllButton);
+    }
+
+    function urlChangeListener() {
+
+        var currentPage = '';
+        var prFilesRegex = /https:\/\/git.*\/pull\/.*\/files.*/;
+
+        setInterval(function() {
+            if (currentPage != window.location.href)
+            {
+                currentPage = window.location.href;
+                if(currentPage.match(prFilesRegex)) {
+                    addFunctionalityToPage();
+                }
+            }
+        }, 500);
+    }
+
+    urlChangeListener();
 
 })();
