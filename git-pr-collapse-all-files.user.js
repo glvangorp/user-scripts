@@ -54,11 +54,8 @@
 
     function addFunctionalityToPage() {
         var toggleAllButton = createToggleAllButton();
-
-        if(toggleAllButton) {
-            var headerActions = document.querySelector('.gh-header-actions');
-            headerActions && headerActions.appendChild(toggleAllButton);
-        }
+        var headerActions = document.querySelector('.gh-header-actions');
+        headerActions && toggleAllButton && headerActions.appendChild(toggleAllButton);
     }
 
     function urlChangeListener() {
